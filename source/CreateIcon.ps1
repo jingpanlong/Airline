@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $iconSizes = @(16,32,48,128,256)
 $iconImages = [Collections.Generic.List[byte[]]]::new()

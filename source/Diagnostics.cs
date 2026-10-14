@@ -237,7 +237,7 @@ namespace Airline {
                 check(Find<TextBlock>(about,"AuthorContacts").Text=="微信公众号：景同志\n小红书：景同学" && !shelf.IsBusy,"About contains exact author contacts and does not lock shelf");
                 var linkBlock=Find<TextBlock>(about,"RepositoryLink");
                 var link=linkBlock==null?null:linkBlock.Inlines.OfType<System.Windows.Documents.Hyperlink>().FirstOrDefault();
-                check(link!=null && link.NavigateUri.ToString()==Product.Repository && linkBlock.Inlines.OfType<System.Windows.Documents.Run>().Any(run=>run.Text==Product.RepositoryLabel),"About shows the GitHub repository address");
+                check(link!=null && link.NavigateUri.ToString()==Product.Repository && link.Inlines.OfType<System.Windows.Documents.Run>().Any(run=>run.Text==Product.RepositoryLabel),"About shows the GitHub repository address");
                 string opened=null; var previousOpen=AboutWindow.OpenLink;
                 try { AboutWindow.OpenLink=url=>opened=url; if(link!=null) link.RaiseEvent(new System.Windows.Navigation.RequestNavigateEventArgs(link.NavigateUri,"about")); }
                 finally { AboutWindow.OpenLink=previousOpen; }
