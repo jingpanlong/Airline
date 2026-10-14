@@ -124,5 +124,3 @@ powershell -ExecutionPolicy Bypass -File .\source\CreateIcon.ps1
 
 - 微信公众号：**景同志**
 - 小红书：**景同学**
-
-*产品灵感来自 Tendedero 的使用方式，此程序为独立实现，不隶属于 Tendedero。*
