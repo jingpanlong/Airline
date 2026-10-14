@@ -1,0 +1,20 @@
+# 编译产物
+Airline.exe
+Airline.exe.config
+*.pdb
+*.obj
+*.user
+
+# 安装器输出
+晾图-v*-单文件版.exe
+晾图-v*-安装版.exe
+installer/*.exe
+
+# WorkBuddy 项目数据（本地记忆/配置）
+.workbuddy/
+
+# 系统与临时文件
+Thumbs.db
+desktop.ini
+.DS_Store
+*.part

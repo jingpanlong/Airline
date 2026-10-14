@@ -1,0 +1,66 @@
+PASS New library is empty
+PASS Identical screenshots remain separate items
+PASS Successful atomic save leaves no partial file
+PASS PNG preserves original dimensions
+PASS PNG round-trip preserves pixel data
+PASS Moving an outgoing copy leaves original in library
+PASS Restart restores all screenshots
+PASS Clipboard preference persists
+PASS All three preferences persist without resetting one another
+PASS Legacy settings migrate with sensible new-feature defaults
+PASS Bulk export copies all PNGs losslessly and retains originals
+PASS Repeated exports create separate folders without overwriting
+PASS Startup is off until user explicitly enables it
+PASS Startup switch enables a correctly quoted executable path
+PASS Startup switch removes only its own value on disable
+PASS Startup rejects command lines beyond Windows Run key limit
+PASS Fullscreen detection distinguishes monitor bounds from work area
+PASS Failed write preserves library and removes partial data
+PASS Selection clamps reverse drags to desktop bounds
+PASS Shell recycle-bin identity is recognized
+PASS Other drag targets do not delete originals
+PASS Native shelf content lays out at target width
+PASS Native WPF window initializes as a tool window
+PASS Annotation export maps display coordinates to original pixels
+PASS Header button accepts hit testing: CaptureButton
+PASS Header button accepts hit testing: FolderButton
+PASS Header button accepts hit testing: MenuButton
+PASS Header button accepts hit testing: SettingsButton
+PASS Header button accepts hit testing: AboutButton
+PASS Brief pointer departure keeps shelf open
+PASS Pointer departure collapses native shelf after animation
+PASS Top edge reopens shelf after collapse
+PASS Header menu click opens an anchored context menu
+PASS Closing menu releases auto-hide suppression
+PASS Modal dialog has owner, stays above shelf, and hides drawer: Editor
+PASS Closing dialog restores native window input: Editor
+PASS Auto-hide still works after modal closes: Editor
+PASS Modeless preview does not disable or lock shelf
+PASS Shelf opens at top edge while preview remains open
+PASS Shelf auto-hides while preview remains open
+PASS Minimized preview does not lock shelf
+PASS Opening same screenshot reuses and restores preview
+PASS Preview close leaves shelf responsive
+PASS Drag image contains original screenshot and follows cursor
+PASS Drag image is transparent to clicks and cannot activate
+PASS Drag image follows physical cursor coordinates via timer
+PASS Drag image actually renders visible pixels
+PASS Drag image closes and timer stops after disposal
+PASS Drag image flips before clipping at screen right and bottom edges
+PASS Actual OLE drag starts with a visible screenshot floating above source
+PASS Canceled OLE drag removes ghost, releases busy state, and retains original
+PASS About contains exact author contacts and does not lock shelf
+PASS About remains open while shelf can expand
+PASS Settings checkbox invokes startup registration
+PASS Settings checkbox disables startup registration
+PASS Startup registration failure reverts switch and leaves startup off
+PASS Preference write failure restores both model and visible switch
+PASS Startup notice is visible above windows without stealing activation
+PASS Startup notice button invokes reveal and dismisses notice
+PASS Startup notice is shown on every launch, rather than just the first run
+PASS Repeated-launch notification explicitly says the app is running
+PASS Fullscreen policy hides shelf and edge strip
+PASS Leaving fullscreen restores collapsed shelf
+PASS Explicit reveal overrides fullscreen avoidance temporarily
+
+64 checks passed. No real user screenshots or clipboard were accessed.

@@ -1,0 +1,3 @@
+PASS Production initialization, HWND hook, tray, native hover timer, expand/collapse, and enabled input
+PASS Repeated-launch notification message acknowledgement
+Clipboard monitoring was disabled and no user screenshots were read or captured.

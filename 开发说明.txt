@@ -1,0 +1,75 @@
+晾图 / Airline v0.2.0 开发说明
+
+设计
+顶部细绳替代 Windows 缺少的 macOS 菜单栏触发区。
+收起只留约 6 DIP 高的细线与中央小标记，展开高度 338 DIP。
+展开 220 毫秒、收起 180 毫秒；指针离开后缓冲约 480 毫秒。
+米白背景、鼠尾草绿线与夹子、略微转动的照片纸；尺寸和时间标在照片底边。
+依屏幕宽度分页展示，保持渲染占用随可见图片数增长。
+初次使用显示“截下来，晾起来”；不添加账户、云同步或多层设置流程。
+
+技术
+C# 5 / WPF / .NET Framework，使用 Windows 原生截图、剪贴板监听、全局快捷键、OLE 文件拖放、Shell 回收站和通知区域图标。
+截图通过 CopyFromScreen 获取虚拟桌面的像素，冻结取图后进行框选，取消时不保存。
+存储先编码到 .part，再在同一资料夹内重命名为唯一 PNG，保存成功后才加入界面。
+创建时间与文件名称恢复历史，重复内容按不同截图保存。
+单击等待系统双击间隔；长按与拖动互斥；卡片卸载时取消挂起手势。
+拖放用真实 PNG 出站副本，并提供 Preferred DropEffect=Copy；即使目标移动文件，原图仍然保留。
+使用 Shell 的 TargetCLSID 检查 RecycleBin GUID，不把普通文件夹的 Move 结果误判为丢弃。
+程序内回收区调用 SHFileOperation，失败或用户取消时保留原图。
+保存标注时合成到原始像素尺寸，而非把界面显示尺寸当作输出尺寸。
+
+编译（无需下载额外 SDK）
+在 source 文件夹中运行：
+  powershell -ExecutionPolicy Bypass -File .\build.ps1
+可选重新生成图标：
+  powershell -ExecutionPolicy Bypass -File .\CreateIcon.ps1
+编译脚本调用系统 .NET Framework 自带 csc.exe；生成的程序位于 source 的上一级。
+
+自动验证（用独立测试资料夹，不访问真实截图或剪贴板）
+  Airline.exe --self-test C:\你的工作目录\test
+该目录会得到 test-results.txt 与独立测试图片。
+
+生成展示图（演示内容，退出后不驻留）
+在可写工作目录中运行：
+  Airline.exe --render-preview C:\你的输出目录\preview.png
+演示图片写入当前目录下 work\preview-data-*。
+
+已验证
+1. 新资料库为空。
+2. 相同内容可重复截图。
+3. 原子保存无残留 .part。
+4. PNG 原始尺寸保留。
+5. PNG 像素无损往返。
+6. 出站副本移走后原图仍在。
+7. 重新加载恢复历史。
+8. 剪贴板设置可持久化。
+9. 写入失败不新增记录、不破坏已有截图。
+10. 反向框选与边界裁切。
+11. 回收站 CLSID 识别。
+12. 普通拖放目标不触发原图删除。
+13. 原生面板布局尺寸。
+14. WPF HWND 创建与 ToolWindow 样式。
+15. 标注导出尺寸与坐标映射。
+另检查了界面预览的视觉布局。v0.1.1 增加 14 项真实 WPF 交互回归检查，共 29 项通过；详见修复说明-v0.1.1.txt 和验证结果.txt。
+
+仍需人工验证
+不同应用的外部 OLE 拖放、Windows 回收站实际拖入、混合 DPI 多屏、连续快捷截图、剪贴板被其他应用占用、远程会话、系统暗色/高对比主题及无障碍键盘体验。
+当前版本只覆盖主屏幕晾图绳，不包含每屏独立绳子、文字与马赛克标注、自动更新。
+
+参考（Windows 官方文档）
+Clipboard listener:
+https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-addclipboardformatlistener
+WPF drag and drop:
+https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/drag-and-drop-overview
+Shell clipboard formats / TargetCLSID / Preferred DropEffect:
+https://learn.microsoft.com/en-us/windows/win32/shell/clipboard
+
+
+v0.1.2：预览改为非模态窗口，不拥有或继承置顶晾图绳的层级；按原图路径复用预览。拖动时新增带 WS_EX_TRANSPARENT、WS_EX_NOACTIVATE 的透明浮层，拖放前完成首帧渲染，GiveFeedback 中调用 SetWindowPos 追踪鼠标。详细说明及当前 40 项检查见修复说明-v0.1.2.txt 和验证结果.txt。
+
+
+v0.2.0：新增普通独立的关于和设置窗口、右下角非激活启动提示、重复运行消息应答、HKCU Run 自启动开关、全屏避让和后台批量导出。
+启动通知通过 RegisterWindowMessage + SendMessageTimeout 触发既有实例。偏好设置兼容旧 settings.txt 并使用临时文件替换；自启动不写入本地偏好，直接读取当前用户的实际注册表值。
+共 64 项检查通过，自启动注册表写入以替身存储验证，没有修改使用者真实启动项。
+渲染新增功能界面：Airline.exe --render-features 绝对路径\preview.png
