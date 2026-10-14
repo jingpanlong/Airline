@@ -3,8 +3,10 @@ using Microsoft.Win32;
 
 namespace Airline {
     internal static class Product {
-        internal const string Version="0.3.0";
+        internal const string Version="0.3.1";
         internal const string Author="微信公众号：景同志\n小红书：景同学";
+        internal const string Repository="https://github.com/jingpanlong/Airline";
+        internal const string RepositoryLabel="github.com/jingpanlong/Airline";
         internal static string Executable { get { return System.Reflection.Assembly.GetExecutingAssembly().Location; } }
     }
     internal interface IStartupStore { string Read(); void Write(string command); void Delete(); }

@@ -26,7 +26,7 @@ namespace Airline {
                     c.DrawRectangle(Ui.B("#ECEDE5"),null,new Rect(0,0,1520,950));
                     Text(c,"晾图  v"+Product.Version+"   /   小工具，也有明确的反馈。",28,23,25,Ui.Ink);
                     Text(c,"关于与作者",28,70,12,Ui.Green); Text(c,"偏好设置",559,70,12,Ui.Green); Text(c,"每次启动都会告诉你",1140,70,12,Ui.Green);
-                    Draw(c,new AboutWindow(),24,98,510,570);
+                    Draw(c,new AboutWindow(),24,98,510,640);
                     Draw(c,new SettingsWindow(data,new StartupRegistration(new EmptyStartupStore(),Product.Executable),()=>{}),551,98,550,790);
                     Draw(c,new StartupNotice(12,()=>{}),1113,98,380,196);
                     Text(c,"开机自启动默认关闭",1140,344,17,Ui.Ink); Text(c,"开启后，登录 Windows 自动运行。",1140,379,13,Ui.Muted);

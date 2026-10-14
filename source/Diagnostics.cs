@@ -235,6 +235,13 @@ namespace Airline {
                 check(shelf.CurrentDragGhost==null && !shelf.IsBusy && File.Exists(shot.Path),"Canceled OLE drag removes ghost, releases busy state, and retains original");
                 var about=shelf.OpenAbout(); Pump(80);
                 check(Find<TextBlock>(about,"AuthorContacts").Text=="微信公众号：景同志\n小红书：景同学" && !shelf.IsBusy,"About contains exact author contacts and does not lock shelf");
+                var linkBlock=Find<TextBlock>(about,"RepositoryLink");
+                var link=linkBlock==null?null:linkBlock.Inlines.OfType<System.Windows.Documents.Hyperlink>().FirstOrDefault();
+                check(link!=null && link.NavigateUri.ToString()==Product.Repository && linkBlock.Inlines.OfType<System.Windows.Documents.Run>().Any(run=>run.Text==Product.RepositoryLabel),"About shows the GitHub repository address");
+                string opened=null; var previousOpen=AboutWindow.OpenLink;
+                try { AboutWindow.OpenLink=url=>opened=url; if(link!=null) link.RaiseEvent(new System.Windows.Navigation.RequestNavigateEventArgs(link.NavigateUri,"about")); }
+                finally { AboutWindow.OpenLink=previousOpen; }
+                check(opened==Product.Repository,"About repository link opens the GitHub address without side effects");
                 check(!TextContents(about).Any(text=>text.Contains("Tendedero") || text.Contains("灵感来自")),"About does not contain inspiration attribution");
                 shelf.UpdateHover(true,true,DateTime.UtcNow); Pump(250); check(shelf.IsExpanded && about.IsVisible,"About remains open while shelf can expand"); about.Close();
                 using(var noSideEffects=new FakeSettingsScope()) {

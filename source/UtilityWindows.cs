@@ -33,8 +33,9 @@ namespace Airline {
         }
     }
     internal sealed class AboutWindow : Window {
+        internal static Action<string> OpenLink=url=> { try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute=true }); } catch(Exception) { } };
         public AboutWindow() {
-            Title="关于晾图"; Width=510; Height=610; ResizeMode=ResizeMode.NoResize; Background=Ui.Paper; WindowStartupLocation=WindowStartupLocation.CenterScreen;
+            Title="关于晾图"; Width=510; Height=672; ResizeMode=ResizeMode.NoResize; Background=Ui.Paper; WindowStartupLocation=WindowStartupLocation.CenterScreen;
             var panel=new StackPanel { Margin=new Thickness(32,24,32,22) }; Content=panel;
             var kicker=Ui.Text("AIRLINE  /  WINDOWS",11,Ui.Green); kicker.Margin=new Thickness(0,0,0,18); panel.Children.Add(kicker);
             var name=Ui.Text("晾图",34,Ui.Ink); name.FontWeight=FontWeights.SemiBold; panel.Children.Add(name);
@@ -42,6 +43,14 @@ namespace Airline {
             var intro=Ui.Text("截图像衣服一样，挂在屏幕顶边。\n靠近时展开，离开时安静收起。\n单击复制，长按标注，双击独立预览。\n拖动发送副本，原图继续留在绳上。",13,Ui.Ink); intro.LineHeight=25; panel.Children.Add(intro);
             var privacy=Ui.Text("本机保存  ·  不上传截图  ·  无需账户",11,Ui.Green); privacy.Margin=new Thickness(0,16,0,18); panel.Children.Add(privacy);
             panel.Children.Add(new Border { Height=1,Background=Ui.Line,Margin=new Thickness(0,0,0,19) });
+            var download=Ui.Text("下载与更新",16,Ui.Ink); download.FontWeight=FontWeights.SemiBold; panel.Children.Add(download);
+            var link=new System.Windows.Documents.Hyperlink { NavigateUri=new Uri(Product.Repository), Foreground=Ui.Green };
+            link.Inlines.Add(Product.RepositoryLabel);
+            link.RequestNavigate+=(s,e)=> { OpenLink(e.Uri.ToString()); e.Handled=true; };
+            var linkBlock=new TextBlock { FontSize=13, Margin=new Thickness(0,11,0,7), TextWrapping=TextWrapping.Wrap };
+            linkBlock.Name="RepositoryLink"; linkBlock.Inlines.Add(link); panel.Children.Add(linkBlock);
+            var downloadHint=Ui.Text("点击打开 GitHub 仓库，获取最新版本、使用说明与更新。",11,Ui.Muted); downloadHint.TextWrapping=TextWrapping.Wrap; panel.Children.Add(downloadHint);
+            panel.Children.Add(new Border { Height=1,Background=Ui.Line,Margin=new Thickness(0,19,0,19) });
             var contact=Ui.Text("联系作者",16,Ui.Ink); contact.FontWeight=FontWeights.SemiBold; panel.Children.Add(contact);
             var author=Ui.Text(Product.Author,14,Ui.Green); author.Name="AuthorContacts"; author.LineHeight=28; author.Margin=new Thickness(0,10,0,15); panel.Children.Add(author);
             var hint=Ui.Text("在对应平台搜索以上名称，即可找到作者。",11,Ui.Muted); panel.Children.Add(hint);
