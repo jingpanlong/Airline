@@ -26,6 +26,8 @@ namespace Airline {
         [DllImport("user32.dll",CharSet=CharSet.Unicode)] internal static extern uint RegisterWindowMessage(string message);
         [DllImport("user32.dll",CharSet=CharSet.Unicode)] internal static extern IntPtr SendMessageTimeout(IntPtr h,uint message,IntPtr w,IntPtr l,uint flags,uint timeout,out IntPtr result);
         internal static readonly uint RunningMessage=RegisterWindowMessage("Airline.Screenline.RunningNotice.v1");
+        internal const uint WDA_NONE=0x00000000;
+        internal const uint WDA_EXCLUDEFROMCAPTURE=0x00000011;
         internal static bool IsOtherFullscreen() {
             IntPtr foreground=GetForegroundWindow(); if(foreground==IntPtr.Zero) return false;
             var className=new StringBuilder(128); GetClassName(foreground,className,128);
@@ -64,6 +66,16 @@ namespace Airline {
             var h = new WindowInteropHelper(w).Handle;
             SetWindowLong(h, -20, GetWindowLong(h,-20)|0x80);
             int pref=1; try { DwmSetWindowAttribute(h, 33, ref pref, 4); } catch { }
+        }
+        // Keep Airline's own always-on-top overlays out of other apps' screen
+        // captures. Without this, a topmost WS_EX_LAYERED window makes GDI/DXGI
+        // desktop capture (WeChat/QQ/Snipaste Alt+A style tools) return a blank
+        // frame. The window stays fully visible and interactive to the user; it
+        // simply is not composited into a captured bitmap.
+        internal static void ExcludeFromCapture(Window w) {
+            var h=new WindowInteropHelper(w).Handle;
+            if(h==IntPtr.Zero) return;
+            try { SetWindowDisplayAffinity(h, WDA_EXCLUDEFROMCAPTURE); } catch { }
         }
     }
 }

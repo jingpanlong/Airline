@@ -46,7 +46,7 @@ namespace Airline {
                 sx=t.M11; sy=t.M22; var p=t.Transform(new Point(bounds.Left,bounds.Top)); Left=p.X; Top=p.Y;
                 Width=bounds.Width*sx; Height=bounds.Height*sy; background.Width=Width; background.Height=Height;
                 Shade(new Rect()); Canvas.SetLeft(hint,Math.Max(12,Width/2-140)); Canvas.SetTop(hint,Math.Max(12,Height/2-24));
-                Native.ToolWindow(this); Activate();
+                Native.ToolWindow(this); Native.ExcludeFromCapture(this); Activate();
             };
             KeyDown+=(s,e)=> { if(e.Key==Key.Escape) { DialogResult=false; Close(); } };
             MouseLeftButtonDown+=(s,e)=> { start=e.GetPosition(canvas); selecting=true; canvas.CaptureMouse(); };

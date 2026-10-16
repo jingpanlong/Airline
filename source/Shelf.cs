@@ -106,7 +106,7 @@ namespace Airline {
             pane.Children.Add(new Border { Height=1,Background=Ui.Line,VerticalAlignment=VerticalAlignment.Bottom,IsHitTestVisible=false });
         }
         void InitializeNative() {
-            Native.ToolWindow(this); if(demo) return;
+            Native.ToolWindow(this); Native.ExcludeFromCapture(this); if(demo) return;
             source=HwndSource.FromHwnd(new WindowInteropHelper(this).Handle); source.AddHook(Hook);
             var transform=source.CompositionTarget.TransformFromDevice;
             var bounds=Forms.Screen.PrimaryScreen.Bounds;

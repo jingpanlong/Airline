@@ -13,12 +13,12 @@ using Microsoft.Win32;
 [assembly: AssemblyTitle("晾图 安装程序")]
 [assembly: AssemblyProduct("晾图 / Airline")]
 [assembly: AssemblyCompany("景同志 / 景同学")]
-[assembly: AssemblyVersion("0.3.1.0")]
-[assembly: AssemblyFileVersion("0.3.1.0")]
+[assembly: AssemblyVersion("0.3.2.0")]
+[assembly: AssemblyFileVersion("0.3.2.0")]
 
 namespace AirlineSetup {
     internal static class Package {
-        internal const string Version="0.3.1",Id="Airline.Screenline",RunKey="Software\\Microsoft\\Windows\\CurrentVersion\\Run",UninstallKey="Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Airline.Screenline";
+        internal const string Version="0.3.2",Id="Airline.Screenline",RunKey="Software\\Microsoft\\Windows\\CurrentVersion\\Run",UninstallKey="Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Airline.Screenline";
         internal static string Self { get { return Assembly.GetExecutingAssembly().Location; } }
         internal static byte[] Payload() { using(var stream=Assembly.GetExecutingAssembly().GetManifestResourceStream("Airline.Payload")) using(var memory=new MemoryStream()) { if(stream==null) throw new InvalidOperationException("缺少程序文件。"); stream.CopyTo(memory); return memory.ToArray(); } }
         internal static string Hash(byte[] bytes) { using(var sha=SHA256.Create()) return BitConverter.ToString(sha.ComputeHash(bytes)).Replace("-",""); }

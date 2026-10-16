@@ -22,6 +22,7 @@ namespace Airline {
             SourceInitialized+=(s,e)=> {
                 var h=new WindowInteropHelper(this).Handle; Native.ToolWindow(this);
                 Native.SetWindowLong(h,-20,Native.GetWindowLong(h,-20)|0x08000000);
+                Native.ExcludeFromCapture(this);
                 var scale=HwndSource.FromHwnd(h).CompositionTarget.TransformFromDevice;
                 var area=System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
                 var corner=scale.Transform(new Point(area.Right,area.Bottom));
