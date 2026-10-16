@@ -34,7 +34,6 @@ namespace Airline {
             SourceInitialized+=(s,e)=> {
                 source=HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
                 Native.SetWindowLong(source.Handle,-20,Native.GetWindowLong(source.Handle,-20)|0x80|0x20|0x08000000);
-                Native.ExcludeFromCapture(this);
                 source.AddHook(Hook);
             };
             follow=new DispatcherTimer(DispatcherPriority.Input) { Interval=TimeSpan.FromMilliseconds(16) };

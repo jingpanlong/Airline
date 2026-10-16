@@ -106,7 +106,7 @@ namespace Airline {
             pane.Children.Add(new Border { Height=1,Background=Ui.Line,VerticalAlignment=VerticalAlignment.Bottom,IsHitTestVisible=false });
         }
         void InitializeNative() {
-            Native.ToolWindow(this); Native.ExcludeFromCapture(this); if(demo) return;
+            Native.ToolWindow(this); if(demo) return;
             source=HwndSource.FromHwnd(new WindowInteropHelper(this).Handle); source.AddHook(Hook);
             var transform=source.CompositionTarget.TransformFromDevice;
             var bounds=Forms.Screen.PrimaryScreen.Bounds;
@@ -158,14 +158,46 @@ namespace Airline {
                 uint now=Native.GetClipboardSequenceNumber();
                 if(now==ignoredSequence) { clipboardRetry.Stop(); return; }
                 if(now!=pendingSequence) { pendingSequence=now; retries=0; }
-                if(System.Windows.Clipboard.ContainsImage()) {
-                    var image=System.Windows.Clipboard.GetImage();
+                if(ImageOnClipboard()) {
+                    var image=LoadClipboardImage();
                     // Only mark consumed after the PNG has been durably stored.
                     if(image!=null && now==Native.GetClipboardSequenceNumber()) { library.Add(image); ignoredSequence=now; page=0; DrawShots(); Status("新截图已经挂好"); }
                 } else ignoredSequence=now;
                 clipboardRetry.Stop();
             } catch(System.Runtime.InteropServices.COMException) { if(++retries>=20) { clipboardRetry.Stop(); Status("剪贴板暂时忙碌，请在托盘中重新截一张"); } }
             catch(Exception ex) { clipboardRetry.Stop(); Error(ex); }
+        }
+        // WeChat (and many tools) put screenshots on the clipboard in formats that
+        // System.Windows.Clipboard.GetImage() renders as a blank BitmapSource. Read
+        // through System.Windows.Forms.Clipboard instead, which decodes DIB/PNG
+        // reliably, then convert to a WPF BitmapSource via an HBITMAP.
+        static bool ImageOnClipboard() {
+            try {
+                if(System.Windows.Clipboard.ContainsImage()) return true;
+                var dao=Forms.Clipboard.GetDataObject();
+                if(dao!=null && (dao.GetDataPresent("Png")||dao.GetDataPresent("image/png")||dao.GetDataPresent(System.Windows.DataFormats.Dib)||dao.GetDataPresent(System.Windows.DataFormats.Bitmap))) return true;
+            } catch { }
+            return false;
+        }
+        static BitmapSource LoadClipboardImage() {
+            BitmapSource result=null;
+            try {
+                using(var src=Forms.Clipboard.GetImage()) {
+                    if(src!=null) {
+                        var bitmap=src as System.Drawing.Bitmap ?? new System.Drawing.Bitmap(src);
+                        try { result=ToBitmapSource(bitmap); }
+                        finally { if(!ReferenceEquals(bitmap,src)) bitmap.Dispose(); }
+                    }
+                }
+            } catch { }
+            if(result==null) { try { var wpf=System.Windows.Clipboard.GetImage(); if(wpf!=null) result=wpf; } catch { } }
+            return result;
+        }
+        static BitmapSource ToBitmapSource(System.Drawing.Bitmap bitmap) {
+            if(bitmap==null) return null;
+            var handle=bitmap.GetHbitmap();
+            try { var source=System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(handle,IntPtr.Zero,Int32Rect.Empty,BitmapSizeOptions.FromEmptyOptions()); source.Freeze(); return source; }
+            finally { Native.DeleteObject(handle); }
         }
         void Hover() {
             if(busy || IsMenuOpen || capturing) return;
